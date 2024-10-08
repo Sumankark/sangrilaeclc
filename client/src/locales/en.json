@@ -1,0 +1,14 @@
+{
+  "navbar": {
+    "name": "Everest Community Learning Center",
+    "home": "Home",
+    "services": "Our Services",
+    "goals": "Our Goals",
+    "volunteering": "Volunteering",
+    "about": "About Us",
+    "contact": "Contact Us"
+  },
+  "welcome": "Welcome to our website",
+  "services": "Our Services",
+  "contact": "Contact Us"
+}
