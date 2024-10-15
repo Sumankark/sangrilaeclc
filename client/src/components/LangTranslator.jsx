@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { MdLanguage } from "react-icons/md";
 import { useTranslation } from "react-i18next";
-import { useEffect, useRef, useState } from "react";
 
 const LangTranslator = () => {
   const { i18n } = useTranslation();
@@ -20,7 +19,10 @@ const LangTranslator = () => {
     setIsDropdownOpen(false); // Close dropdown after language change
   };
 
-  const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
+  const toggleDropdown = (e) => {
+    e.preventDefault(); // Prevent default button behavior
+    setIsDropdownOpen((prev) => !prev);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -41,11 +43,13 @@ const LangTranslator = () => {
         type="button"
         className="flex items-center text-white bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-lg shadow-lg"
         onClick={toggleDropdown}
+        aria-label="Change Language"
       >
-        <MdLanguage className="mr-1 text-xl" /> {i18n.language.toUpperCase()}
+        <MdLanguage className="mr-1 text-xl" />
+        {i18n.language.toUpperCase()}
       </button>
       {isDropdownOpen && (
-        <div className="mt-2 ml-[-60px] bg-white shadow-lg rounded-md w-32">
+        <div className="mt-2 ml-[-60px] relative bg-white shadow-lg rounded-md w-32">
           <button
             onClick={() => changeLanguage("en")}
             className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"

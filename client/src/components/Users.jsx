@@ -7,7 +7,9 @@ import React, {
 } from "react";
 import { Slide, toast, ToastContainer } from "react-toastify";
 import { FaUserEdit } from "react-icons/fa";
-import { AiOutlineUserAdd, AiOutlineUserDelete } from "react-icons/ai";
+import { AiOutlineUserAdd } from "react-icons/ai";
+import { MdDeleteForever } from "react-icons/md";
+
 import { hitApi } from "../services/hitApi";
 
 const Users = () => {
@@ -224,7 +226,6 @@ const Users = () => {
   return (
     <div>
       <ToastContainer />
-
       <div>
         <div className="mt-5">
           <strong className="text-gray-700 font-bold text-xl">Users</strong>
@@ -287,7 +288,7 @@ const Users = () => {
                         title="Delete User"
                         onClick={() => handleDelete(item)}
                       >
-                        <AiOutlineUserDelete />
+                        <MdDeleteForever />
                       </button>
                     </td>
                   </tr>

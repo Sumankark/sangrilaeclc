@@ -4,10 +4,8 @@ import "./App.css";
 import Main from "./pages/Main";
 import AdminDashBoard from "./pages/AdminDashBoard";
 import AdminLogin from "./pages/AdminLogin";
-import LangTranslator from "./components/LangTranslator";
 import Users from "./components/Users";
 import Carousel from "./components/Carousel";
-import Images from "./components/Images";
 import Goals from "./components/Goals";
 import Services from "./components/Services";
 import Volunteering from "./components/Volunteering";
@@ -15,6 +13,8 @@ import About from "./components/About";
 import Organization from "./components/Organization";
 import Home from "./components/Home";
 import Profile from "./components/Profile";
+import Gallery from "./components/Gallery";
+import LangTranslator from "./components/LangTranslator";
 
 function App() {
   return (
@@ -31,7 +31,7 @@ function App() {
             <Route path="profile" element={<Profile />} />
             <Route path="user" element={<Users />} />
             <Route path="carousel" element={<Carousel />} />
-            <Route path="images" element={<Images />} />
+            <Route path="gallery" element={<Gallery />} />
             <Route path="goals" element={<Goals />} />
             <Route path="services" element={<Services />} />
             <Route path="volunteering" element={<Volunteering />} />
