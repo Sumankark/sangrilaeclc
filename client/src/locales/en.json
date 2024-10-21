@@ -10,5 +10,12 @@
   },
   "welcome": "Welcome to our website",
   "services": "Our Services",
-  "contact": "Contact Us"
+  "contact": "Contact Us",
+  "more": "Learn More",
+  "back": "Back",
+  "gallery": "Our Gallery",
+  "goals": {
+    "description": "“To build a vibrant, diverse learning community that empowers individuals through accessible education”",
+    "title": "AIM and Objectives"
+  }
 }

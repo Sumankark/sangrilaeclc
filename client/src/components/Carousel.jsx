@@ -49,7 +49,12 @@ const Carousel = () => {
     const { files } = e.target;
     if (files.length > 0) {
       const file = files[0];
-      if (file && (file.type === "image/jpeg" || file.type === "image/png")) {
+      if (
+        file &&
+        (file.type === "image/jpg" ||
+          file.type === "image/jpeg" ||
+          file.type === "image/png")
+      ) {
         setCarouselData((prevData) => ({
           ...prevData,
           image: file,

@@ -1,4 +1,11 @@
 import { Carousel } from "../schema/model.js";
+import fs from "fs";
+import { join } from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export const addCarousel = async (req, res) => {
   try {
@@ -37,12 +44,15 @@ export const addCarousel = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: "Carousel Item created successfully.",
+      message: "Carousel created successfully.",
       data: newCarouselItem,
     });
   } catch (error) {
     console.error("Error creating carousel item:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({
+      success: false,
+      message: "Internal Server error",
+    });
   }
 };
 
@@ -58,7 +68,7 @@ export const getCarousel = async (req, res) => {
     console.error("Error fetching carousel items:", error);
     res.status(500).json({
       success: false,
-      message: "Server error while fetching carousel items.",
+      message: "Internal server error while fetching carousel items.",
     });
   }
 };
@@ -83,9 +93,10 @@ export const updateCarousel = async (req, res) => {
       data: updatedCarousel,
     });
   } catch (error) {
+    console.error("Error update carousel item: ", error);
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Internal server errror while update carousel",
     });
   }
 };
@@ -93,7 +104,27 @@ export const updateCarousel = async (req, res) => {
 export const deleteCarousel = async (req, res) => {
   try {
     const deletedCarousel = await Carousel.findByIdAndDelete(req.params.id);
-    res.json({
+
+    if (!deletedCarousel) {
+      return res.status(404).json({
+        success: false,
+        message: "Carousel item not found.",
+      });
+    }
+
+    const imagePath = join(__dirname, "../../public", deletedCarousel.image);
+
+    fs.unlink(imagePath, (err) => {
+      if (err) {
+        console.error("Error deleting image file:", err);
+        return res.status(500).json({
+          success: false,
+          message: "Error deleting image file.",
+        });
+      }
+    });
+
+    res.status(200).json({
       success: true,
       message: "Deleted successfully",
       data: deletedCarousel,

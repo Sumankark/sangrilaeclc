@@ -15,6 +15,8 @@ import Home from "./components/Home";
 import Profile from "./components/Profile";
 import Gallery from "./components/Gallery";
 import LangTranslator from "./components/LangTranslator";
+import GoalsDetails from "./components/Users/GoalsDetails";
+import OurGallery from "./components/Users/OurGallery";
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
       <div className="relative">
         <Routes>
           <Route path="/" element={<Main />} />
+          <Route path="/goals" element={<GoalsDetails />} />
+          <Route path="/our-gallery" element={<OurGallery />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashBoard />}>
             <Route index element={<Home />} />

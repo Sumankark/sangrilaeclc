@@ -36,3 +36,6 @@
     transform: rotate(360deg);
   }
 }
+.ck-editor__editable {
+  min-height: 250px; /* Set minimum height for the editor */
+}

@@ -1,63 +1,65 @@
 import { Service } from "../schema/model.js";
 
-export const addService = async (req, res) => {
-  const { title, description, details } = req.body;
-
+export const createService = async (req, res) => {
   try {
-    const imagePaths = req.files.map((file) => file.path);
+    const {
+      titleEn,
+      titleNp,
+      descriptionEn,
+      descriptionNp,
+      detailEn,
+      detailNp,
+    } = req.body;
 
-    const newService = new Service({
-      images: imagePaths,
-      title: {
-        en: title.en,
-        np: title.np,
-      },
-      description: {
-        en: description.en,
-        np: description.np,
-      },
-      details,
-    });
+    const imagePath = req.file ? req.file.filename : null;
 
-    await newService.save();
-
-    res.status(201).json({
-      success: true,
-      message: "Service created successfully.",
-      result: newService,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Error creating service",
-      error: error.message,
-    });
-  }
-};
-
-export const deleteService = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const service = await Service.findByIdAndDelete(id);
-
-    if (!service) {
-      return res.status(404).json({
+    if (!imagePath) {
+      return res.status(400).json({
         success: false,
-        message: "Service not found.",
+        message: "Image is required.",
+      });
+    }
+    if ((titleEn && titleNp) || descriptionEn || descriptionNp) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Either title and description must be provided in English or Nepali",
       });
     }
 
-    res.status(200).json({
+    const newService = new Service({
+      imagePath: imagePath,
+      title: {
+        en: titleEn || "",
+        np: titleNp || "",
+      },
+      description: {
+        en: descriptionEn || "",
+        np: descriptionNp || "",
+      },
+      detail: {
+        en: detailEn || "",
+        np: detailNp || "",
+      },
+    });
+
+    await newService.save();
+    res.status(201).json({
       success: true,
-      message: "Service deleted successfully.",
-      result: service,
+      message: "Service Created Successfully.",
+      data: newService,
     });
   } catch (error) {
+    console.error("Error creating carousel Item: ", error);
     res.status(500).json({
       success: false,
-      message: "Internal server error",
-      error: error.message,
+      message: "Internal Server error",
     });
   }
 };
+
+export const getService = async (req, res) => {};
+
+export const editService = async (req, res) => {};
+
+export const deleteService = async (req, res) => {};

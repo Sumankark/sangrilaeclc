@@ -27,8 +27,12 @@ const serviceSchema = Schema(
       },
     },
     details: {
-      type: Schema.Types.ObjectId,
-      ref: "ServiceDetail",
+      en: {
+        type: String,
+      },
+      np: {
+        type: String,
+      },
     },
   },
   {
