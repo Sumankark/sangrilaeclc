@@ -11,7 +11,7 @@ export const createDefaultUser = async () => {
       const hashPassword = await bcrypt.hash("admin", 10);
 
       const defaultUser = new User({
-        userName: "admin",
+        userName: "xadmin",
         password: hashPassword,
         role: "user",
       });
@@ -59,34 +59,6 @@ export const Login = async (req, res) => {
     res.status(500).json({ message: "Internal Server error" });
   }
 };
-
-export const getProfile = async (req, res) => {
-  const id = req._id;
-
-  try {
-    const user = await User.findById(id);
-
-    if (!user) {
-      res.status(404).json({
-        success: false,
-        message: "user not found.",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "User data retrive Successfully.",
-      result: user,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal Server error",
-      errror: error.message,
-    });
-  }
-};
-
 export const updateUsername = async (req, res) => {
   const id = req._id;
   const { userName } = req.body;
@@ -212,16 +184,43 @@ export const getAllUser = async (req, res) => {
     }
 
     const users = await User.find();
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Get User data successfully",
       result: users,
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Error retrieving users",
       error,
+    });
+  }
+};
+
+export const getProfile = async (req, res) => {
+  const id = req._id;
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User data retrieved successfully.",
+      result: user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server error",
+      error: error.message,
     });
   }
 };
@@ -234,6 +233,7 @@ export const updateUser = async (req, res) => {
         message: "Access Denied",
       });
     }
+
     const { userName, password, role } = req.body;
     const updateData = { userName, role };
 
@@ -247,7 +247,7 @@ export const updateUser = async (req, res) => {
     });
 
     if (!updateUser) {
-      res.status(404).json({
+      return res.status(404).json({
         success: false,
         message: "User not found.",
       });
@@ -255,7 +255,7 @@ export const updateUser = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "user update successfully",
+      message: "User updated successfully.",
       result: updateUser,
     });
   } catch (error) {
@@ -269,8 +269,8 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
   try {
     if (req.user.role !== "superAdmin") {
-      res.status(403).json({
-        success: true,
+      return res.status(403).json({
+        success: false,
         message: "Access Denied.",
       });
     }
@@ -278,7 +278,7 @@ export const deleteUser = async (req, res) => {
     const deleteUser = await User.findByIdAndDelete(req.params.id);
 
     if (!deleteUser) {
-      res.status(404).json({
+      return res.status(404).json({
         success: false,
         message: "User not found.",
       });
@@ -286,11 +286,11 @@ export const deleteUser = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "user delete successfully.",
+      message: "User deleted successfully.",
       result: deleteUser,
     });
   } catch (error) {
-    res.status.json({
+    res.status(500).json({
       success: false,
       message: "Internal server error.",
     });

@@ -5,6 +5,9 @@ import { useTranslation } from "react-i18next";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import OurGoals from "../components/Users/OurGoals";
 import OurGallery from "../components/Users/OurGallery";
+import OurServices from "../components/Users/OurServices";
+import VolunteeringFnt from "../components/Users/VolunteeringFnt";
+import Footer from "../components/Users/Footer";
 
 const Main = () => {
   const [carouselData, setCarouselData] = useState([]);
@@ -129,6 +132,16 @@ const Main = () => {
       <div className="bg-gray-100">
         <OurGallery />
       </div>
+
+      <div id="our-services">
+        <OurServices />
+      </div>
+
+      <div id="volunteering">
+        <VolunteeringFnt />
+      </div>
+
+      <Footer />
     </div>
   );
 };

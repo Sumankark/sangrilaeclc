@@ -9,31 +9,25 @@ const serviceSchema = Schema(
     title: {
       en: {
         type: String,
-        required: [true, "en title field is required."],
       },
       np: {
         type: String,
-        required: [true, "np title field is required."],
       },
     },
     description: {
       en: {
         type: String,
-        required: [true, "en description field is required."],
-      },
-      np: {
-        type: String,
-        required: [true, "np description field is required."],
-      },
-    },
-    details: {
-      en: {
-        type: String,
       },
       np: {
         type: String,
       },
     },
+    details: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "ServiceDetail",
+      },
+    ],
   },
   {
     timestamps: true,

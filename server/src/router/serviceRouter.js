@@ -5,13 +5,20 @@ import {
   deleteService,
   editService,
   getService,
+  getSpecificService,
 } from "../controller/serviceController.js";
 
 const serviceRouter = Router();
 
-serviceRouter.route("/").post(upload.single("image"), createService);
-serviceRouter.route("/").get(getService);
-serviceRouter.route("/:id").patch(editService);
-serviceRouter.route("/:id", deleteService);
+serviceRouter
+  .route("/")
+  .post(upload.single("image"), createService)
+  .get(getService);
+
+serviceRouter
+  .route("/:id")
+  .get(getSpecificService)
+  .patch(upload.single("image"), editService)
+  .delete(deleteService);
 
 export default serviceRouter;

@@ -36,6 +36,27 @@
     transform: rotate(360deg);
   }
 }
-.ck-editor__editable {
-  min-height: 250px; /* Set minimum height for the editor */
+
+/* .ck-editor__editable {
+  min-height: 250px; 
+}
+
+.resize-handle {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  cursor: pointer;
+} */
+
+.ql-container {
+  min-height: 12rem;
+  overflow-y: auto !important;
+}
+
+.ql-editor img {
+  display: block; /* Ensures the image behaves like a block element */
+  max-width: 100%; /* Limits image width to container size */
+  height: auto; /* Maintains aspect ratio */
+  margin: 0 auto; /* Centers image horizontally */
+  border-radius: 8px; /* Optional: Rounds the corners of images */
 }

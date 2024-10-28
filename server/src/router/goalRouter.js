@@ -9,9 +9,10 @@ import {
 
 const goalRouter = Router();
 
-goalRouter.route("/").post(upload.single("image"), addGoal);
-goalRouter.route("/").get(getGoal);
-goalRouter.route("/:id").patch(upload.single("image"), updateGoal);
-goalRouter.route("/:id").delete(deletedGoal);
+goalRouter.route("/").post(upload.single("image"), addGoal).get(getGoal);
+goalRouter
+  .route("/:id")
+  .patch(upload.single("image"), updateGoal)
+  .delete(deletedGoal);
 
 export default goalRouter;

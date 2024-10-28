@@ -8,8 +8,7 @@ import {
 
 const galleryRouter = Router();
 
-galleryRouter.route("/").post(upload.single("image"), addImage);
-galleryRouter.route("/").get(getImage);
+galleryRouter.route("/").post(upload.single("image"), addImage).get(getImage);
 galleryRouter.route("/:id").delete(deleteImage);
 
 export default galleryRouter;

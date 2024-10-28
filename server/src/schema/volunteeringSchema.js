@@ -9,21 +9,17 @@ const volunteeringSchema = Schema(
     title: {
       en: {
         type: String,
-        required: [true, "en title is required."],
       },
       np: {
         type: String,
-        required: [true, "np title is required."],
       },
     },
     description: {
       en: {
         type: String,
-        required: [true, "en description is required."],
       },
       np: {
         type: String,
-        required: [true, "np description is required."],
       },
     },
   },

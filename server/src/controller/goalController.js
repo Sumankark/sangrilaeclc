@@ -47,7 +47,7 @@ export const addGoal = async (req, res) => {
       data: newGoal,
     });
   } catch (error) {
-    console.error("Error creating carousel Item: ", error);
+    console.error("Error creating goal Item: ", error);
     res.status(500).json({
       success: false,
       message: "Internal Server error",

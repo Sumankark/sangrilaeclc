@@ -1,76 +1,50 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoIosAddCircle } from "react-icons/io";
-import { MdDeleteForever } from "react-icons/md";
 import { useTranslation } from "react-i18next";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { hitApi } from "../services/hitApi";
+import { Slide, toast, ToastContainer } from "react-toastify";
+import { Link } from "react-router-dom";
 
 const Services = () => {
-  const { i18n } = useTranslation();
-  const language = i18n.language;
-
-  const [services, setServices] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [serviceData, setServiceData] = useState({
     image: null,
     titleEn: "",
     titleNp: "",
     descriptionEn: "",
     descriptionNp: "",
-    detailEn: "",
-    detailNp: "",
   });
-
-  const editorConfig = {
-    toolbar: [
-      "undo",
-      "redo",
-      "|",
-      "heading",
-      "|",
-      "bold",
-      "italic",
-      "|",
-      "link",
-      "insertImage",
-      "|",
-      "bulletedList",
-      "numberedList",
-    ],
-    image: {
-      toolbar: [
-        "toggleImageCaption",
-        "imageTextAlternative",
-        "|",
-        "resizeImage",
-      ],
-    },
+  const [serviceItems, setServiceItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingItemId, setEditingItemId] = useState("");
+  const { i18n } = useTranslation();
+  const language = i18n.language;
+  const openModal = () => {
+    setIsModalOpen(true);
   };
-
-  // Modal Control
-  const openModal = () => setIsModalOpen(true);
 
   const closeModal = () => {
     setIsModalOpen(false);
-    resetServiceData();
-  };
-
-  // Reset service data state
-  const resetServiceData = () => {
     setServiceData({
       image: null,
       titleEn: "",
       titleNp: "",
       descriptionEn: "",
       descriptionNp: "",
-      detailEn: "",
-      detailNp: "",
     });
+    setIsEditing(false);
+    setEditingItemId(null);
   };
 
-  // File Change Handler
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setServiceData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
   const handleFileChange = (e) => {
     const { files } = e.target;
     if (files.length > 0) {
@@ -91,64 +65,154 @@ const Services = () => {
     }
   };
 
-  // Input Change Handler
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setServiceData({ ...serviceData, [name]: value });
-  };
-
-  // CKEditor Change Handler
-  const handleCKEditorChange = (event, editor) => {
-    const data = editor.getData();
-    setServiceData((prevData) => ({
-      ...prevData,
-      [language === "en" ? "detailEn" : "detailNp"]: data,
-    }));
-  };
-
-  // Form Submit Handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
+    const formData = new FormData();
+    formData.append("image", serviceData.image);
+    formData.append("titleEn", serviceData.titleEn);
+    formData.append("titleNp", serviceData.titleNp);
+    formData.append("descriptionEn", serviceData.descriptionEn);
+    formData.append("descriptionNp", serviceData.descriptionNp);
+
     try {
-      const formData = new FormData();
-      formData.append("image", serviceData.image);
-      formData.append("titleEn", serviceData.titleEn);
-      formData.append("titleNp", serviceData.titleNp);
-      formData.append("descriptionEn", serviceData.descriptionEn);
-      formData.append("descriptionNp", serviceData.descriptionNp);
-      formData.append("detailEn", serviceData.detailEn);
-      formData.append("detailNp", serviceData.detailNp);
+      if (isEditing) {
+        // Update goal item
+        const response = await hitApi.patch(
+          `/service/${editingItemId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        toast.success(response.data.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        });
 
-      console.log(serviceData);
-
-      await hitApi.post("/service", formData);
-
-      // Update services state with the new service
-      setServices((prevServices) => [
-        ...prevServices,
-        {
-          ...serviceData,
-          image: URL.createObjectURL(serviceData.image), // Temporary image preview
-        },
-      ]);
+        setServiceItems((prevItems) =>
+          prevItems.map((item) =>
+            item._id === editingItemId ? response.data.data : item
+          )
+        );
+      } else {
+        // Add new goal item
+        const response = await hitApi.post("/service", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        setServiceItems([...serviceItems, response.data.data]);
+        toast.success(response.data.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        });
+      }
+      fetchserviceItems();
 
       closeModal();
     } catch (error) {
-      console.error("Error adding service:", error);
+      toast.error(error.message || "Error submitting goal data:", error, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
     } finally {
       setLoading(false);
     }
   };
 
+  const fetchserviceItems = async () => {
+    setLoading(true);
+    try {
+      const response = await hitApi.get("/service");
+      setServiceItems(response.data.result);
+    } catch (error) {
+      console.error("Error fetching goal items:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchserviceItems();
+  }, []);
+
+  const handleEditService = (item) => {
+    setIsEditing(true);
+    setEditingItemId(item._id);
+    setServiceData({
+      image: item.image,
+      titleEn: item.title.en,
+      titleNp: item.title.np,
+      descriptionEn: item.description.en,
+      descriptionNp: item.description.np,
+    });
+    openModal();
+  };
+
+  const handleDeleteService = async (item) => {
+    try {
+      const response = await hitApi.delete(`service/${item._id}`);
+      toast.success(response.data.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      fetchserviceItems();
+    } catch (error) {
+      toast.error(error.message || "Something went wrong.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+    }
+  };
+
   return (
     <div>
+      <ToastContainer />
+
       <div className="mt-5">
         <strong className="text-gray-700 font-bold text-xl">Services</strong>
       </div>
 
-      <div className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 shadow-md flex-1 mt-5">
+      <div className="bg-white p-4 rounded-md border border-gray-200 shadow-md flex-1 mt-5">
         <div className="flex">
           <button
             className="border p-2 font-medium flex gap-2 rounded-md hover:bg-gray-200 bg-gray-100 shadow-sm transition-all ease-in-out duration-300"
@@ -158,12 +222,13 @@ const Services = () => {
             Add Services
           </button>
         </div>
+
         <div className="mt-5 overflow-x-auto">
           <table className="min-w-full text-gray-700 border-collapse border border-slate-300">
             <thead className="bg-gray-100">
               <tr>
                 <th className="border border-slate-300 px-4 py-2 text-left text-sm text-gray-600">
-                  S.N
+                  S.N.
                 </th>
                 <th className="border border-slate-300 px-4 py-2 text-left text-sm text-gray-600">
                   Image
@@ -171,50 +236,57 @@ const Services = () => {
                 <th className="border border-slate-300 px-4 py-2 text-left text-sm text-gray-600">
                   Title
                 </th>
-                <th className="border border-slate-300 px-4 py-2 text-center text-sm text-gray-600">
+                <th className="border border-slate-300 px-4 py-2 text-left text-sm text-gray-600">
                   Description
                 </th>
-                <th className="border border-slate-300 px-4 py-2 text-center text-sm text-gray-600">
+                <th className="border border-slate-300 px-4 py-2 text-left text-sm text-gray-600">
                   Details
                 </th>
-                <th className="border border-slate-300 px-4 py-2 text-center text-sm text-gray-600">
+                <th className="border border-slate-300 px-4 py-2 text-left text-sm text-gray-600">
                   Action
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200">
-              {services.map((item, i) => (
-                <tr
-                  key={i}
-                  className="hover:bg-gray-50 transition-colors ease-in-out duration-300"
-                >
-                  <td className="border border-slate-300 px-4 py-2 text-sm font-medium">
-                    {i + 1}
+              {serviceItems.map((item, index) => (
+                <tr key={item._id || index}>
+                  <td className="border border-slate-300 px-4 py-2 text-left text-sm text-gray-600">
+                    {index + 1}
                   </td>
-                  <td className="border border-slate-300 px-4 py-2 text-sm font-medium">
+                  <td className="border border-slate-300 px-4 py-2 text-left text-sm text-gray-600">
                     <img
-                      src={item.image}
-                      alt="Service"
-                      className="w-12 h-12 object-cover"
+                      src={`http://localhost:8080/${item.image}`}
+                      alt={language === "en" ? item.title.en : item.title.np}
+                      className="w-20 h-20 object-cover"
                     />
                   </td>
-                  <td className="border border-slate-300 px-4 py-2 text-sm font-medium">
-                    {language === "en" ? item.titleEn : item.titleNp}
+                  <td className="border border-slate-300 px-4 py-2 text-left text-sm text-gray-600">
+                    {language === "en" ? item.title.en : item.title.np}
                   </td>
-                  <td className="border border-slate-300 px-4 py-2 text-sm">
+                  <td className="border border-slate-300 px-4 py-2 text-left text-sm text-gray-600">
                     {language === "en"
-                      ? item.descriptionEn
-                      : item.descriptionNp}
+                      ? item.description.en
+                      : item.description.np}
                   </td>
-                  <td className="border border-slate-300 px-4 py-2 text-sm">
-                    {language === "en" ? item.detailEn : item.detailNp}
+                  <td className="border border-slate-300 px-4 py-2 text-left text-sm text-gray-600">
+                    <button className="text-blue-500">
+                      <Link to={`/admin/dashboard/service-details/${item._id}`}>
+                        show
+                      </Link>
+                    </button>
                   </td>
-                  <td className="border border-slate-300 px-4 py-2 text-sm flex justify-center gap-4">
+                  <td className="flex flex-col mt-3 gap-3 border-slate-300 px-4 py-2 text-left text-sm text-gray-600">
                     <button
-                      className="p-2 text-red-600 hover:text-red-800 transition-colors ease-in-out duration-300"
-                      title="Delete Service"
+                      className="text-blue-500"
+                      onClick={() => handleEditService(item)}
                     >
-                      <MdDeleteForever />
+                      Edit
+                    </button>
+                    <button
+                      className="text-red-500"
+                      onClick={() => handleDeleteService(item)}
+                    >
+                      Delete
                     </button>
                   </td>
                 </tr>
@@ -230,25 +302,11 @@ const Services = () => {
             className="absolute inset-0 bg-gray-600 bg-opacity-50"
             onClick={closeModal}
           ></div>
-          <div
-            className="bg-white p-6 rounded-md shadow-md z-10 max-w-2xl w-full"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="bg-white p-6 rounded-md shadow-md z-10 max-w-md w-full">
             <h2 className="text-xl font-bold mb-4 flex justify-center">
-              Add Service
+              {isEditing ? "Edit Service" : "Add Service"}
             </h2>
             <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label className="block mb-1 font-medium">Image</label>
-                <input
-                  type="file"
-                  name="image"
-                  onChange={handleFileChange}
-                  className="w-full border px-3 py-2 rounded-md"
-                  accept="image/jpeg, image/png"
-                />
-              </div>
-
               <div className="mb-4">
                 <label className="block mb-1 font-medium">
                   {language === "en" ? "Title (English)" : "Title (Nepali)"}
@@ -266,15 +324,13 @@ const Services = () => {
                   required
                 />
               </div>
-
               <div className="mb-4">
                 <label className="block mb-1 font-medium">
                   {language === "en"
                     ? "Description (English)"
                     : "Description (Nepali)"}
                 </label>
-                <input
-                  type="text"
+                <textarea
                   name={language === "en" ? "descriptionEn" : "descriptionNp"}
                   value={
                     language === "en"
@@ -286,40 +342,41 @@ const Services = () => {
                   required
                 />
               </div>
-
               <div className="mb-4">
-                <label className="block mb-1 font-medium">
-                  {language === "en" ? "Details (English)" : "Details (Nepali)"}
-                </label>
-                <div className="h-72 overflow-y-auto">
-                  <CKEditor
-                    editor={ClassicEditor}
-                    data={
-                      language === "en"
-                        ? serviceData.detailEn
-                        : serviceData.detailNp
-                    }
-                    config={editorConfig}
-                    onChange={handleCKEditorChange}
-                    className="border rounded-md"
-                  />
-                </div>
+                <label className="block mb-1 font-medium">Image</label>
+                <input
+                  type="file"
+                  name="image"
+                  onChange={handleFileChange}
+                  className="w-full border px-3 py-2 rounded-md"
+                  accept="image/jpeg, image/png"
+                />
               </div>
-
+              {serviceData.image && (
+                <img
+                  src={
+                    typeof serviceData.image === "string"
+                      ? `http://localhost:8080/${serviceData.image}`
+                      : URL.createObjectURL(serviceData.image)
+                  }
+                  alt="Preview"
+                  className="w-20 h-20 mb-3"
+                />
+              )}
               <div className="flex justify-end">
                 <button
-                  type="button"
-                  onClick={closeModal}
-                  className="mr-2 p-2 bg-gray-300 rounded-md"
-                >
-                  Cancel
-                </button>
-                <button
                   type="submit"
-                  className="p-2 bg-blue-600 text-white rounded-md"
+                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-all duration-300"
                   disabled={loading}
                 >
-                  {loading ? "Loading..." : "Add Service"}
+                  {loading ? "Saving..." : isEditing ? "Update" : "Save"}
+                </button>
+                <button
+                  type="button"
+                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-all duration-300 ml-2"
+                  onClick={closeModal}
+                >
+                  Cancel
                 </button>
               </div>
             </form>

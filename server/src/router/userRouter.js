@@ -22,9 +22,9 @@ userRouter.route("/update-username").patch(isAuthenticated, updateUsername);
 userRouter.route("/update-password").patch(isAuthenticated, updatePassword);
 userRouter.route("/add-user").post(isAuthenticated, isSuperAdmin, addUser);
 userRouter.route("/users").get(isAuthenticated, isSuperAdmin, getAllUser);
-userRouter.route("/users/:id").patch(isAuthenticated, isSuperAdmin, updateUser);
 userRouter
   .route("/users/:id")
+  .patch(isAuthenticated, isSuperAdmin, updateUser)
   .delete(isAuthenticated, isSuperAdmin, deleteUser);
 
 export default userRouter;
