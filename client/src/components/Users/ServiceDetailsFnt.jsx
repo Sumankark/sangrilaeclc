@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { hitApi } from "../../services/hitApi";
 import NavBar from "../NavBar";
 import { useParams } from "react-router-dom";
+import Footer from "./Footer";
 
 const ServiceDt = () => {
   const { id } = useParams();
@@ -84,6 +85,7 @@ const ServiceDt = () => {
           ))}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

@@ -66,12 +66,15 @@ const OurGoals = () => {
           </div>
         ))}
       </div>
-      <Link
-        to={`/goals`}
-        className="mx-[610px] pl-3 p-2 text-[14px] flex items-center justify-center mt-2 bg-blue-500 hover:bg-blue-700 text-white rounded"
-      >
-        {t("more")} <IoIosArrowForward className="ml-1" />
-      </Link>
+
+      <div className="flex items-center justify-center">
+        <Link
+          to={`/goals`}
+          className=" pl-3 p-2 text-[14px] w-[130px] flex items-center justify-center mt-2 bg-blue-500 hover:bg-blue-700 text-white rounded"
+        >
+          {t("more")} <IoIosArrowForward className="ml-1" />
+        </Link>
+      </div>
     </div>
   );
 };

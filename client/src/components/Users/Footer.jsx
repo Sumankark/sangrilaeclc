@@ -99,7 +99,7 @@ const Footer = () => {
         </div>
       </div>
       <img
-        src="./logo.png"
+        src="/logo.png"
         alt="logo"
         className="h-10 md:h-[13px] lg:h-16 p-2 ml-[100px]"
       />{" "}

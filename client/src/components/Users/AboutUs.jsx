@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { hitApi } from "../../services/hitApi";
 import NavBar from "../NavBar";
+import Footer from "./Footer";
 
 const AboutUs = () => {
   const [aboutItems, setAboutItems] = useState([]);
@@ -64,6 +65,7 @@ const AboutUs = () => {
           ))}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

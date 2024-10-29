@@ -174,7 +174,11 @@ const ContactUs = () => {
                 />
                 <label
                   htmlFor="name"
-                  className="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-slate-400 text-sm transition-all transform origin-left peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs peer-focus:text-slate-400 peer-focus:scale-90"
+                  className={`absolute cursor-text bg-white px-1  ${
+                    formData.name
+                      ? "-top-2 left-2.5 text-xs text-slate-400 scale-90"
+                      : "left-2.5 top-2.5 text-slate-400 text-sm transition-all"
+                  }  transform origin-left peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs peer-focus:text-slate-400 peer-focus:scale-90`}
                 >
                   {t("name")}
                 </label>
@@ -196,7 +200,11 @@ const ContactUs = () => {
                 />
                 <label
                   htmlFor="name"
-                  className="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-slate-400 text-sm transition-all transform origin-left peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs peer-focus:text-slate-400 peer-focus:scale-90"
+                  className={`absolute cursor-text bg-white px-1  ${
+                    formData.address
+                      ? "-top-2 left-2.5 text-xs text-slate-400 scale-90"
+                      : "left-2.5 top-2.5 text-slate-400 text-sm transition-all"
+                  }  transform origin-left peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs peer-focus:text-slate-400 peer-focus:scale-90`}
                 >
                   {t("addres")}
                 </label>
@@ -218,7 +226,11 @@ const ContactUs = () => {
                 />
                 <label
                   htmlFor="email"
-                  className="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-slate-400 text-sm transition-all transform origin-left peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs peer-focus:text-slate-400 peer-focus:scale-90"
+                  className={`absolute cursor-text bg-white px-1  ${
+                    formData.email
+                      ? "-top-2 left-2.5 text-xs text-slate-400 scale-90"
+                      : "left-2.5 top-2.5 text-slate-400 text-sm transition-all"
+                  }  transform origin-left peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs peer-focus:text-slate-400 peer-focus:scale-90`}
                 >
                   {t("email")}
                 </label>
@@ -244,7 +256,11 @@ const ContactUs = () => {
                 />
                 <label
                   htmlFor="number"
-                  className="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-slate-400 text-sm transition-all transform origin-left peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs peer-focus:text-slate-400 peer-focus:scale-90"
+                  className={`absolute cursor-text bg-white px-1  ${
+                    formData.number
+                      ? "-top-2 left-2.5 text-xs text-slate-400 scale-90"
+                      : "left-2.5 top-2.5 text-slate-400 text-sm transition-all"
+                  }  transform origin-left peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs peer-focus:text-slate-400 peer-focus:scale-90`}
                 >
                   {t("phone")}
                 </label>
@@ -262,7 +278,11 @@ const ContactUs = () => {
                 />
                 <label
                   htmlFor="message"
-                  className="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-slate-400 text-sm transition-all transform origin-left peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs peer-focus:text-slate-400 peer-focus:scale-90"
+                  className={`absolute cursor-text bg-white px-1  ${
+                    formData.message
+                      ? "-top-2 left-2.5 text-xs text-slate-400 scale-90"
+                      : "left-2.5 top-2.5 text-slate-400 text-sm transition-all"
+                  }  transform origin-left peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs peer-focus:text-slate-400 peer-focus:scale-90`}
                 >
                   {t("message")}
                 </label>
