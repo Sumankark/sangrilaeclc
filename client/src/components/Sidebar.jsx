@@ -13,63 +13,69 @@ import { CgProfile } from "react-icons/cg";
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const navigate = useNavigate();
+  const role = localStorage.getItem("role");
   const menus = [
     {
-      name: "dashboard",
+      name: "Dashboard",
       link: "/admin/dashboard",
       icon: TbLayoutDashboard,
     },
     {
-      name: "profile",
+      name: "Profile",
       link: "/admin/dashboard/profile",
       icon: CgProfile,
       margin: true,
     },
     {
-      name: "user",
+      name: "User",
       link: "/admin/dashboard/user",
       icon: AiOutlineUser,
     },
     {
-      name: "carousel",
+      name: "Carousel",
       link: "/admin/dashboard/carousel",
       icon: BiSolidCarousel,
     },
     {
-      name: "gallery",
+      name: "Gallery",
       link: "/admin/dashboard/gallery",
       icon: FaImages,
       margin: true,
     },
     {
-      name: "goals",
+      name: "Goals",
       link: "/admin/dashboard/goals",
       icon: GoGoal,
     },
     {
-      name: "services",
+      name: "Services",
       link: "/admin/dashboard/services",
       icon: FaServicestack,
     },
     {
-      name: "volunteering",
+      name: "Volunteering",
       link: "/admin/dashboard/volunteering",
       icon: MdVolunteerActivism,
       margin: true,
     },
     {
-      name: "about",
+      name: "About",
       link: "/admin/dashboard/about",
       icon: FcAbout,
     },
     {
-      name: "organization",
+      name: "Organization",
       link: "/admin/dashboard/organization",
       icon: GoOrganization,
     },
   ];
 
-  const handleLogout = async () => {
+  const filteredMenus = menus.filter((menu) => {
+    if (menu.name === "User" && role !== "superAdmin") return false;
+    return true;
+  });
+
+  const handleLogout = () => {
     localStorage.clear();
     navigate("/admin/login");
   };
@@ -89,7 +95,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           />
         </div>
         <div className="mt-4 flex flex-col gap-4 relative">
-          {menus?.map((item, i) => (
+          {filteredMenus.map((item, i) => (
             <Link
               key={i}
               to={item.link}
@@ -113,7 +119,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                   isOpen && "hidden"
                 } absolute left-48 bg-white font-semibold whitespace-pre text-gray-900 rounded-md  drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit`}
               >
-                {item?.name}
+                {item.name}
               </h2>
             </Link>
           ))}
